@@ -1,41 +1,25 @@
 import streamlit as st
 import speech_recognition as sr
-import tempfile
-import os
 
 def main():
-    st.title("Speech Recognition and Audio Recording")
+    st.title("Speech Recognition App")
 
-    recognizer = sr.Recognizer()
+    r = sr.Recognizer()
 
-    recording = st.button("Start Recording")
-
-    if recording:
-        st.write("Recording... Please speak into your microphone.")
+    st.write("Click the 'Start Recording' button and speak something:")
+    if st.button("Start Recording"):
         with sr.Microphone() as source:
-            audio = recognizer.listen(source)
+            st.write("Listening...")
+            audio = r.listen(source)
 
-        st.write("Recording finished!")
-
-        # Save the recorded audio to a temporary file
-        with tempfile.NamedTemporaryFile(delete=False) as temp_audio:
-            temp_audio.write(audio.get_wav_data())
-            temp_audio_path = temp_audio.name
-
-        # Display the recorded audio using st.audio
-        st.audio(temp_audio_path, format="audio/wav")
-
-        try:
-            st.write("Recognizing...")
-            text = recognizer.recognize_google(audio)
-            st.write(f"You said: {text}")
-        except sr.UnknownValueError:
-            st.warning("Could not understand audio")
-        except sr.RequestError as e:
-            st.error(f"Error with the request; {e}")
-
-        # Remove the temporary audio file
-        os.remove(temp_audio_path)
+            try:
+                st.write("Processing...")
+                text = r.recognize_google(audio)
+                st.write("Transcription:", text)
+            except sr.UnknownValueError:
+                st.write("Sorry, I could not understand audio.")
+            except sr.RequestError as e:
+                st.write("Error:", e)
 
 if __name__ == "__main__":
     main()
