@@ -1,0 +1,1 @@
+https://github.com/intake/dependencies/raw/master/Constraints-intake.txt
